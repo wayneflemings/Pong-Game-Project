@@ -10,7 +10,7 @@ let playerWins,
 let pause = false;
 
 function setup() {
-  createCanvas(700, 500);
+  createCanvas(700, 600);
   resetBall();
 }
 
@@ -24,33 +24,34 @@ function draw() {
   //computer paddle
   drawPaddle(640, rgtPaddleY);
 
-  //ball
-  fill("white");
-  noStroke();
-  circle(ballX, ballY, 15);
-
+  /*
   //right paddle follows ball
   if (ballY < rgtPaddleY) {
-    rgtPaddleY -= speed;
+    rgtPaddleY -= 8;
   } else if (ballY > rgtPaddleY) {
-    rgtPaddleY += speed;
+    rgtPaddleY += 8;
   }
+*/
+
+  let yDifference = ballY - rgtPaddleY;
+  rgtPaddleY += yDifference * 0.2;
+  rgtPaddleY = constrain(rgtPaddleY, 0, height - 50);
 
   //Move the ball
   ballX += xBallSpeed;
   ballY += yBallSpeed;
 
-  //ball collision with top and bottom
-  if (ballY > height - 5 || ballY < 10) {
-    yBallSpeed *= -1;
+  //ball collision with paddles
+  if (ballX < 60 && ballY > lftPaddleY && ballX < lftPaddleY + 20) {
+    xBallSpeed *= -1;
+  }
+  if (ballX > width - 60 && ballY > rgtPaddleY && ballY < rgtPaddleY + 50) {
+    xBallSpeed *= -1;
   }
 
-  //ball collision with paddles
-  if (ballX < 50 && ballY > lftPaddleY && ballX < lftPaddleY + 20) {
-    xBallSpeed *= -1;
-  }
-  if (ballX > width - 50 && ballY > rgtPaddleY && ballY < rgtPaddleY + 20) {
-    xBallSpeed *= -1;
+  //ball collision with top and bottom
+  if (ballY > height - 5 || ballY < 15) {
+    yBallSpeed *= -1;
   }
 
   //Scoring points
@@ -62,6 +63,11 @@ function draw() {
     lftScore++;
     resetBall();
   }
+
+  //ball
+  fill("white");
+  noStroke();
+  circle(ballX, ballY, 15);
 
   //Display score
   fill("white");
@@ -92,12 +98,12 @@ function draw() {
     xBallSpeed = 0;
     yBallSpeed = 0;
     yPaddleSpeed = 0;
-  } else {
-    xBallSpeed = random(2, 4);
-    yBallSpeed = random(2, 4);
+  } else if(!pause && !playerWins && !computerWins) {
+    xBallSpeed = 2;
+    yBallSpeed = 2;
+    
   }
 }
-
 //stops game once winner declared
 if (playerWins || computerWins) {
   xBallSpeed = 0;
@@ -109,7 +115,7 @@ if (playerWins || computerWins) {
 function drawPaddle(x, y) {
   fill("white");
   noStroke();
-  rect(x, y, 10, 50);
+  rect(x, y, 10, 55);
 }
 
 //uses 'w' and 's' as up and down
@@ -146,8 +152,12 @@ function keyTyped() {
 function resetBall() {
   ballX = width / 2;
   ballY = height / 2;
-  xBallSpeed = random(2, 4);
-  yBallSpeed = random(2, 4);
   lftPaddle = 250;
   rgtPaddle = 250;
+  
+  if(!pause && !playerWins && !computerWins) {
+    xBallSpeed = 2;
+    yBallSpeed = 2;
+    
+  }
 }
