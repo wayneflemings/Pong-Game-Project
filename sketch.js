@@ -23,16 +23,8 @@ function draw() {
 
   //computer paddle
   drawPaddle(640, rgtPaddleY);
-
-  /*
-  //right paddle follows ball
-  if (ballY < rgtPaddleY) {
-    rgtPaddleY -= 8;
-  } else if (ballY > rgtPaddleY) {
-    rgtPaddleY += 8;
-  }
-*/
-
+  
+  //allows computer paddle to follow ball within range
   let yDifference = ballY - rgtPaddleY;
   rgtPaddleY += yDifference * 0.2;
   rgtPaddleY = constrain(rgtPaddleY, 0, height - 50);
@@ -54,7 +46,7 @@ function draw() {
     yBallSpeed *= -1;
   }
 
-  //Scoring points
+  //Scoring points(ball collision with walls)
   if (ballX < 0) {
     rgtScore++;
     resetBall();
@@ -86,7 +78,7 @@ function draw() {
     computerWins = true;
   }
 
-  //displays text and pauses game also stops game once winner declared
+ //pauses game also stops game when winner declared
   if (pause) {
     fill(255);
     textSize(20);
@@ -98,17 +90,7 @@ function draw() {
     xBallSpeed = 0;
     yBallSpeed = 0;
     yPaddleSpeed = 0;
-  } else if(!pause && !playerWins && !computerWins) {
-    xBallSpeed = 2;
-    yBallSpeed = 2;
-    
   }
-}
-//stops game once winner declared
-if (playerWins || computerWins) {
-  xBallSpeed = 0;
-  yBallSpeed = 0;
-  yPaddleSpeed = 0;
 }
 
 //draws paddles
@@ -140,11 +122,16 @@ function keyReleased() {
   }
 }
 
-//uses p as pause
+//uses 'p' as pause
 function keyTyped() {
   if (key == "p") {
     pause = !pause;
     console.log(pause);
+
+    if (!pause) {
+      xBallSpeed = 2;
+      yBallSpeed = 2;
+    }
   }
 }
 
@@ -152,12 +139,8 @@ function keyTyped() {
 function resetBall() {
   ballX = width / 2;
   ballY = height / 2;
+  xBallSpeed = 2;
+  yBallSpeed = 2;
   lftPaddle = 250;
   rgtPaddle = 250;
-  
-  if(!pause && !playerWins && !computerWins) {
-    xBallSpeed = 2;
-    yBallSpeed = 2;
-    
-  }
 }
